@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		5E56CE962F57E576005C95EB /* project 3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "project 3.app"; path = "/Users/ash/Documents/ios_bootcamp/project 3/build/Debug-iphoneos/project 3.app"; sourceTree = "<absolute>"; };
+		5E21768F2F785B4A006AA2F4 /* project 3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "project 3.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				5E8AFE842F57BA4000E80809 /* project 3 */,
+				5E21768F2F785B4A006AA2F4 /* project 3.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,7 +59,7 @@
 			packageProductDependencies = (
 			);
 			productName = "project 3";
-			productReference = 5E56CE962F57E576005C95EB /* project 3.app */;
+			productReference = 5E21768F2F785B4A006AA2F4 /* project 3.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */

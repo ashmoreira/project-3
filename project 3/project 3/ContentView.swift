@@ -5,75 +5,80 @@ struct ContentView: View {
     @State private var page: RemindersPage = RemindersPage(title:"Todo List", items:[], color: .red)
     
     var body: some View {
-        VStack {
-            HStack{
-                Text("5:52")
-                    .bold()
-                Spacer()
-                HStack(spacing:1){
-                    Image(systemName:"ellipsis")
-                        .offset(y:5)
-                        .foregroundStyle(.secondary)
-                    Image(systemName:"wifi")
-                    Image(systemName:"battery.100percent")
-                }
-            }
-            .padding(.horizontal, 40)
-            .padding(.top, -35)
-            .foregroundStyle(Color(.label))
-            .font(.system(size:19))
-            HStack {
-                Text(page.title)
-                    .font(.system(size:40, weight: .bold))
-                Spacer()
-                
-                Button {
-                    isEditing.toggle()
-                } label: {
-                    Image(systemName: "info.circle")
-                        .font(.headline)
-                }
-            }
-            .padding(30)
-                List {
-                    ForEach($page.items) { $reminder in
-                        HStack{
+        NavigationStack {
+            List {
+                // for each reminder there is a completed button
+                ForEach($page.items) {$reminder in
+                    NavigationLink (value: reminder.id) {
+                        HStack {
                             Button {
                                 reminder.isCompleted.toggle()
-                            } label : {
-                                Image(systemName: reminder.isCompleted ? "circle.fill" : "circle").font(.title2).bold()
+                            } label: {
+                                Image(systemName: reminder.isCompleted ? "circle.fill" : "circle")
+                                    .font(.title2)
+                                    .bold()
                             }
-                            TextField("Add Item", text:$reminder.title)
+                            .buttonStyle(.borderless)
+                            // when new reminder added -> there is a filled in name to be replaced
+                            Text(reminder.title.isEmpty ? "New Reminder" : reminder.title)
                                 .font(.system(size:20))
-                                .foregroundStyle(.black)
                             
+                            Spacer()
+                            // adding date
+                            Text(reminder.date, style: .relative)
+                                .font(.system(size:15))
+                                .foregroundStyle(.secondary)
                         }
-                    }
-                    .onDelete { indexSet in
-                        page.items.remove(atOffsets: indexSet)
+                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                     }
                 }
-                .listStyle(.plain)
-            HStack{
+                .onDelete {indexSet in
+                    page.items.remove(atOffsets: indexSet)
+                }
+            }
+            .listStyle(.plain)
+            .navigationTitle(page.title)
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isEditing.toggle()
+                    } label: {
+                        Image(systemName: "info.circle")
+                    }
+                }
+            }
+            .navigationDestination(for: UUID.self) {id in
+                if let index = page.items.firstIndex (where: {$0.id == id }) {
+                    ReminderDetailView(
+                        selectedColor: $page.color,
+                        reminder: $page.items[index],
+                        isEditing: $isEditing,
+                        name: $page.title
+                    )
+                }
+            }
+            
+            HStack {
                 Spacer()
-                Button {
-                    page.items.append( Reminder(title:""))
-                }label :{
-                    Image(systemName: "plus.circle.fill")
-                        .font(.largeTitle)
-                }
-            }
-            .padding(.horizontal,45)
-
                 
-            }
-        .foregroundStyle(page.color)
-            .sheet(isPresented: $isEditing) {
-                // TODO: Add remaining binding
-                EditSheet(selectedColor: $page.color, name:$page.title)
+                Button {
+                    page.items.append(Reminder(title: "", description: "", date: Date()))
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size:50))
+                }
+                .padding(.trailing, 30)
+                .padding(.bottom, 10)
             }
         }
+        .foregroundStyle(page.color)
+        .sheet(isPresented: $isEditing) {
+            EditSheet(selectedColor: $page.color, name: $page.title)
+        }
     }
+}
+
 #Preview {
     ContentView()
 }
